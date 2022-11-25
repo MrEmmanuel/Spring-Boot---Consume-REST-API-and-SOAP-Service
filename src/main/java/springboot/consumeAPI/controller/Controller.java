@@ -15,14 +15,14 @@ public class Controller {
     UserService userService;
 
     @GetMapping("/repos")
-    public ResponseEntity<String> getRepos(String userName)
+    public ResponseEntity<String> getRepos(String user)
     {
-        return new ResponseEntity<String>(userService.getRepos(userName), HttpStatus.OK);
+        return new ResponseEntity<String>(userService.getRepos(user), HttpStatus.OK);
     }
 
     @GetMapping("/commits")
-    public ResponseEntity<String> getCommits(String userName, String repoName)
+    public ResponseEntity<String> getCommits(String user, String repoName)
     {
-        return new ResponseEntity<String>(userService.getCommits(userName,repoName), HttpStatus.OK);
+        return new ResponseEntity<String>(userService.getCommits(user,repoName), HttpStatus.OK);
     }
 }
