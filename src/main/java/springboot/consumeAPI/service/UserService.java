@@ -1,8 +1,10 @@
 package springboot.consumeAPI.service;
 
+import org.springframework.http.ResponseEntity;
+
 public interface UserService {
 
-    String getCommits(String repoName, String userName);
-    String getRepos(String userName);
+    ResponseEntity<String> getCommits();
+    ResponseEntity<String>  getRepos();
 
 }

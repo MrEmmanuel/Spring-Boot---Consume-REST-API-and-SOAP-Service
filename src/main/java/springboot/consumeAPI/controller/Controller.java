@@ -1,29 +1,39 @@
 package springboot.consumeAPI.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestTemplate;
 import springboot.consumeAPI.service.UserService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user/")
 public class Controller {
+
+    @GetMapping("/")
+    public String Home(){
+        return "Welcome Home";
+    }
     @Autowired
     UserService userService;
 
-    @GetMapping("/repos")
-    public ResponseEntity<String> getRepos(@PathVariable String user) {
-
-        return new ResponseEntity<String>(userService.getRepos(user), HttpStatus.OK);
+    @GetMapping("/list/commits")
+    public ResponseEntity<String> getCommits() {
+        RestTemplate template = new RestTemplate();
+        String userResourceUrl = "https://api.github.com/repos/MrEmmanuel/git-basic-exercises/commits";
+        ResponseEntity<String> response = template.getForEntity(userResourceUrl, String.class);
+        System.out.println("response " + response);
+        return response;
     }
 
-    @GetMapping("/commits")
-    public ResponseEntity<String> getCommits(String user, String repoName)
-    {
-        return new ResponseEntity<String>(userService.getCommits(user,repoName), HttpStatus.OK);
+    @GetMapping("/list/repos")
+    public ResponseEntity<String> getRepos(){
+        RestTemplate template = new RestTemplate();
+        String userResourceUrl = "https://api.github.com/users/MrEmmanuel/repos";
+        ResponseEntity<String> response = template.getForEntity(userResourceUrl, String.class);
+        System.out.println("response " + response);
+        return response;
     }
 }
