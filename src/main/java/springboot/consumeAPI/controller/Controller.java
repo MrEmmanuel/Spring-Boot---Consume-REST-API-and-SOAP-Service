@@ -12,19 +12,23 @@ import springboot.consumeAPI.service.UserService;
 @RequestMapping("/api/user/")
 public class Controller {
 
+    private final UserService userService;
     @GetMapping("/")
-    public String Home(){
+    public String home(){
         return "Welcome Home";
     }
+
     @Autowired
-    UserService userService;
+    public Controller(UserService userService){
+        this.userService = userService;
+    }
 
     @GetMapping("/list/commits")
     public ResponseEntity<String> getCommits() {
         RestTemplate template = new RestTemplate();
         String userResourceUrl = "https://api.github.com/repos/MrEmmanuel/git-basic-exercises/commits";
         ResponseEntity<String> response = template.getForEntity(userResourceUrl, String.class);
-        System.out.println("response " + response);
+        System.out.println("response " + response.getBody());
         return response;
     }
 
@@ -33,7 +37,7 @@ public class Controller {
         RestTemplate template = new RestTemplate();
         String userResourceUrl = "https://api.github.com/users/MrEmmanuel/repos";
         ResponseEntity<String> response = template.getForEntity(userResourceUrl, String.class);
-        System.out.println("response " + response);
+        System.out.println("response " + response.getBody());
         return response;
     }
 }
