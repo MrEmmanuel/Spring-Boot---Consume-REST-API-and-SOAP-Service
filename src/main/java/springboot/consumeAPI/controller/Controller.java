@@ -1,5 +1,8 @@
 package springboot.consumeAPI.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -7,9 +10,15 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import springboot.consumeAPI.service.UserService;
+import springboot.consumeAPI.wsdl.CountriesPortService;
+import springboot.consumeAPI.wsdl.Country;
+import springboot.consumeAPI.wsdl.GetCountryRequest;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 @RestController
-@RequestMapping("/api/user/")
+@RequestMapping("/api")
 public class Controller {
 
     private final UserService userService;
@@ -39,5 +48,21 @@ public class Controller {
         ResponseEntity<String> response = template.getForEntity(userResourceUrl, String.class);
         System.out.println("response " + response.getBody());
         return response;
+    }
+
+    @GetMapping("get/country")
+    public Object getCountry() throws MalformedURLException, JsonProcessingException {
+        URL url = new URL("http://localhost:9090/ws/countries.wsdl");
+        CountriesPortService countriesPortService = new CountriesPortService(url);
+
+        GetCountryRequest request = new GetCountryRequest();
+        request.setName("United Kingdom");
+
+        Country country = countriesPortService.getCountriesPortSoap11().getCountry(request).getCountry();
+        JSONObject response = new JSONObject(country);
+        response.remove("name");
+
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.readValue(response.toString(),Object.class);
     }
 }
